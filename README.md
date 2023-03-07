@@ -3,8 +3,8 @@
 # Introduction
 Facial expression recognition takes an video frame and classifies into eight categories (neutral, happy, angry, sad, fear, surprise, disgust, contempt).
 
-<img src="https://github.com/{PATH}/blob/master/media/ezgif.com-video-to-gifA.gif?raw=true">
-<img src="https://github.com/{PATH}/blob/master/media/ezgif.com-video-to-gifB.gif?raw=true">
+<img src="https://github.com/keti-iiprc/miai_facial_expression_recognition/blob/master/media/ezgif.com-video-to-gifA.gif?raw=true">
+<img src="https://github.com/keti-iiprc/miai_facial_expression_recognition/blob/master/media/ezgif.com-video-to-gifB.gif?raw=true">
 
 # How to use
 
