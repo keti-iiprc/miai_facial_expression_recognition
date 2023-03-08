@@ -19,7 +19,7 @@ opencv-python
 ```
 
 
-# Data preparation
+## Data preparation
 
 Download pretrained model from the link: [google drive](https://drive.google.com/drive/folders/1hcouPIyxpP2MRCy8CdGJWQzIAbzbKDyQ?usp=sharing, "google drive"). 
 
@@ -33,7 +33,7 @@ Download pretrained model from the link: [google drive](https://drive.google.com
    ...
 ```
 
-# Inference
+## Inference
 ```
 python demo.py
 ```
