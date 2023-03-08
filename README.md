@@ -1,7 +1,7 @@
 # [MIAI] Facial expression recognition:smile:
 
 # Introduction
-Facial expression recognition takes an video frame and classifies into eight categories (neutral, happy, angry, sad, fear, surprise, disgust, contempt).
+Facial expression recognition takes an image frame and classifies into eight categories (neutral, happy, angry, sad, fear, surprise, disgust, contempt).
 
 <img src="https://github.com/keti-iiprc/miai_facial_expression_recognition/blob/master/media/ezgif.com-video-to-gifA.gif?raw=true">
 <img src="https://github.com/keti-iiprc/miai_facial_expression_recognition/blob/master/media/ezgif.com-video-to-gifB.gif?raw=true">
@@ -38,8 +38,5 @@ Download pretrained model from the link: [google drive](https://drive.google.com
 python demo.py
 ```
 
-
-
-> This work was supported by Institute of Information & communications Technology Planning & Evaluation (IITP) grant funded by the Korea government(MSIT) (No.0000-0-00000, Artificial intelligence research about multi-modal interactions for empathetic conversations with humans)
 
 ## 
