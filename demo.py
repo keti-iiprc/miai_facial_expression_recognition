@@ -6,6 +6,7 @@ import torch
 from torchvision import transforms
 import math
 from modules.emonet import Net
+from collections import deque
 import mediapipe as mp
 
 
@@ -19,7 +20,7 @@ class Model():
                                     std=[0.229, 0.224, 0.225])])
         self.labels = ['neutral', 'happy', 'sad', 'surprise', 'fear', 'disgust', 'anger', 'contempt']
         self.model = Net(pretrained=False)
-        checkpoint = torch.load('./checkpoints/ckpt.pth', map_location=self.device)
+        checkpoint = torch.load('./checkpoints/ckpt3.pth', map_location=self.device)
         self.model.load_state_dict(checkpoint['model_state_dict'],strict=True)
         self.model.to(self.device)
         self.model.eval()
@@ -51,17 +52,22 @@ class Model():
         img = img.to(self.device)
 
         with torch.no_grad():
-            out, _, _ = self.model(img)
+            out, _, _, arousal, valence = self.model(img)
             _, pred = torch.max(out,1)
             index = int(pred)
             label = self.labels[index]
-            return label
+            return label, arousal, valence
 
     def video(self, video_file):
         cap = cv2.VideoCapture(video_file)
         cnt = 0
         os.makedirs('result', exist_ok=True)
-
+        
+        MAX_QUEUE_SIZE = 29
+        arousal_queue = deque()
+        valence_queue = deque()
+        emotion_queue = deque()
+        
         while cap.isOpened():
             ret, frame = cap.read()
 
@@ -85,10 +91,24 @@ class Model():
                     frame = cv2.rectangle(frame, (x, y), (x+w,y+h), (0, 255, 0), 3)
 
                     with torch.set_grad_enabled(False):
-                        out, _, _ = self.model(img)
+                        out, _, _, arousal, valence = self.model(img)
                         _, pred = torch.max(out,1)
                         index = int(pred)
-                        label = self.labels[index]
+                        
+                        emotion_queue.append(index)
+                        arousal_queue.append(arousal)
+                        valence_queue.append(valence)
+                        
+                        while len(emotion_queue) >= MAX_QUEUE_SIZE: _ = emotion_queue.popleft()
+                        while len(arousal_queue) >= MAX_QUEUE_SIZE: _ = arousal_queue.popleft()
+                        while len(valence_queue) >= MAX_QUEUE_SIZE: _ = valence_queue.popleft()
+                        
+                        mov_label = [emotion_queue.count(i) for i in range(len(self.labels))]
+                        mov_label = mov_label.index(max(mov_label))
+                        mov_arousal = sum(arousal_queue) / len(arousal_queue)
+                        mov_valence = sum(valence_queue) / len(valence_queue)
+                        
+                        label = '%s/%.2f/%.2f'%(self.labels[mov_label], mov_arousal, mov_valence)
 
                         font_scale = min(frame.shape[0], frame.shape[1]) * 2e-3
                         thickness = math.ceil(min(frame.shape[0], frame.shape[1]) * 1e-3)
@@ -98,8 +118,10 @@ class Model():
             else:
                 break
         cap.release()
+    
         
 if __name__ == "__main__":
-    model = Model()   
+    
+    model = Model()
     #emotion = model.image("temp.png")
     model.video('y2.mp4')

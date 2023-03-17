@@ -16,9 +16,13 @@ class Net(nn.Module):
         for i in range(4):
             setattr(self,"layer%d" %i, AttentionBlock())
         self.sig = nn.Sigmoid()
-        self.fc = nn.Linear(512, 8)
-        self.bn = nn.BatchNorm1d(8)
-
+        self.fc = nn.Sequential(nn.Linear(512, 8),
+                                  nn.BatchNorm1d(8))
+        self.fc_aro = nn.Sequential(nn.Linear(512, 1), 
+                                      nn.BatchNorm1d(1))
+        self.fc_val = nn.Sequential(nn.Linear(512, 1), 
+                                      nn.BatchNorm1d(1))
+            
     def get_feature(self, x):
         x = self.features(x)
         return x
@@ -32,9 +36,10 @@ class Net(nn.Module):
         if layers.size(1)>1:
             layers = F.log_softmax(layers,dim=1)
         out = self.fc(layers.sum(dim=1))
-        out = self.bn(out)
-   
-        return out, x, layers
+        aro_out = self.fc_aro(layers.sum(dim=1))
+        val_out = self.fc_val(layers.sum(dim=1))
+        
+        return out, x, layers, aro_out, val_out
 
 
 class AttentionBlock(nn.Module):

@@ -11,7 +11,7 @@ Facial expression recognition takes an image frame and classifies into eight cat
 ## Environment Setup
 The code is tested in the following environment. The newer version of the packages should be also be fine.
 ```
-python==3.7+
+python==3.7
 numpy
 mediapipe
 pandas
